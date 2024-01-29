@@ -1,0 +1,9 @@
+[submodule "submodules/busybox"]
+	path = submodules/busybox
+	url = tag:xworld.mine.nu,2009:someplace-busybox-aigafwek87b99rizp1r515j02.git
+[submodule "submodules/configs"]
+	path = submodules/configs
+	url = tag:xworld.mine.nu,2009:someplace-busybox--customization--configs-n44pz19cqa6l6ysp8digg6ifs.git
+[submodule "submodules/customization"]
+	path = submodules/customization
+	url = tag:xworld.mine.nu,2009:someplace-busybox--customization-iw1rm9hy62q2eu5rtrxis446y.git
