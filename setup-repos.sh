@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# v2024.29
+# v2024.29.1
 set -e
 trap 'test $? = 0 || echo "\"$0\" failed!" >& 2' 0
 
@@ -32,7 +32,12 @@ do
 done
 shift `expr $OPTIND - 1 || :`
 
-if test ! -d submodules
+if
+	test ! -d submodules \
+	|| for d in submodules/*
+	do
+		test ! -e $d/.git || break
+	done
 then
 	git submodule update --init
 fi
