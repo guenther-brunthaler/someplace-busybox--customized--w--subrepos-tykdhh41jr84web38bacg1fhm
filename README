@@ -1,0 +1,30 @@
+How to use this repository
+==========================
+v2025.130
+
+Typical procedure:
+
+# Fetch from git - probably already done at this point.
+git clone --recurse-submodules \
+	tag:xworld.mine.nu,2009:someplace-busybox--customi`:
+	`zed--w--subrepos-tykdhh41jr84web38bacg1fhm.git \
+	busybox-customized-w-subrepos
+
+cd busybox-customized-w-subrepos
+
+# Create some symlinks for working.
+./setup-repos.sh
+
+cd workdir
+
+# "-g" builds generic, non host-specific executables.
+./build_and_stage_all.sh -g configs/all-20240120.config busybox
+
+cd busybox/stages
+
+# Optional: Create a distribution tarball.
+set busybox-*[0-9] && echo "Staging tree: '$*'"
+find "$1" | LC_COLLATE=C sort | tar --no-recursion -cJ -T - -f "$1".txz
+
+# Optional: Serve distribution tarball on (W-)LAN for other hosts to download.
+tar -cv "$1.txz" | socat -u STDIN TCP4-LISTEN:9999,bind=`hostname`,reuseaddr
