@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# v2024.29.1
+# v2025.322
 set -e
 trap 'test $? = 0 || echo "\"$0\" failed!" >& 2' 0
 
@@ -12,9 +12,11 @@ esac
 me=`dirname -- "$me"`
 cd -- "$me"
 
-while getopts r opt
+clone_bb_source_code=false
+while getopts rs opt
 do
 	case $opt in
+		s) clone_bb_source_code=true;;
 		r)
 			for f in \
 				workdir/configs workdir/busybox workdir
@@ -36,10 +38,16 @@ if
 	test ! -d submodules \
 	|| for d in submodules/*
 	do
-		test ! -e $d/.git || break
+		test -e $d/.git && continue
+		if test $d != submodules/busybox || $clone_bb_source_code
+		then
+			false || break
+		fi
+		mkdir -p $d
+		(cd $d && git init)
 	done
 then
-	git submodule update --init
+	git submodule update --init --depth=1 --quiet
 fi
 
 git_ignore() {

@@ -1,30 +1,34 @@
 How to use this repository
 ==========================
-v2025.130
+v2025.322
 
 Typical procedure:
 
 # Fetch from git - probably already done at this point.
-git clone --recurse-submodules \
+$ git clone \
 	tag:xworld.mine.nu,2009:someplace-busybox--customi`:
 	`zed--w--subrepos-tykdhh41jr84web38bacg1fhm.git \
 	busybox-customized-w-subrepos
 
-cd busybox-customized-w-subrepos
+$ cd busybox-customized-w-subrepos
 
-# Create some symlinks for working.
-./setup-repos.sh
+# Create some symlinks for working and fetch submodules.
+$ ./setup-repos.sh -s
 
-cd workdir
+# Without the "-s" option, the BusyBox source code will not be fetched and you
+# have to fetch it manually from somewhere else (such as from locally archived
+# files).
 
-# "-g" builds generic, non host-specific executables.
-./build_and_stage_all.sh -g configs/all-20240120.config busybox
+$ cd workdir
 
-cd busybox/stages
+$ ./build_and_stage_all.sh configs/all-20240120.config
+
+$ cd busybox/stages
 
 # Optional: Create a distribution tarball.
-set busybox-*[0-9] && echo "Staging tree: '$*'"
-find "$1" | LC_COLLATE=C sort | tar --no-recursion -cJ -T - -f "$1".txz
+$ set busybox-*[0-9] && echo "Staging tree: '$*'"
+$ find "$1" | LC_COLLATE=C sort | tar --no-recursion -c -T - \
+     | xz -9ce > "$1".txz
 
 # Optional: Serve distribution tarball on (W-)LAN for other hosts to download.
-tar -cv "$1.txz" | socat -u STDIN TCP4-LISTEN:9999,bind=`hostname`,reuseaddr
+$ tar -cv "$1.txz" | socat -u STDIN TCP4-LISTEN:9999,bind=`hostname`,reuseaddr
