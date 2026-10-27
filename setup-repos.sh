@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# v2025.322
+# v2026.300
 set -e
 trap 'test $? = 0 || echo "\"$0\" failed!" >& 2' 0
 
@@ -47,7 +47,15 @@ if
 		(cd $d && git init)
 	done
 then
-	git submodule update --init --depth=1 --quiet
+	sed 's/^\[submodule "\(.*\)"\]$/\1/; t; d' .gitmodules \
+	| while IFS= read -r m
+	do
+		git submodule init "$m"
+		test "$m" = submodules/busybox && continue
+		git submodule update --depth=1 --quiet "$m" \
+		|| echo "Failed to update submodule \"$m\"!" >& 2
+		(cd -- "$m" && git checkout -q --force)
+	done
 fi
 
 git_ignore() {
